@@ -49,6 +49,13 @@ class WishEditFragment(id: Long = -1) : Fragment() {
         binding.addImage.setOnClickListener {
             createPicture()
         }
+
+        binding.saveButton.setOnClickListener {
+            val wishItemName = binding.name.text.toString()
+            val wishItemPrice = binding.price.text.toString().toDouble()
+            val wishItemDescription = binding.description.text.toString()
+            val wishItemImageUri = imageUri
+        }
     }
 
     private fun createPicture() {
