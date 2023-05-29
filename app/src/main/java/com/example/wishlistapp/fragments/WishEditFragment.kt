@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.wishlistapp.R
 import com.example.wishlistapp.databinding.FragmentWishEditBinding
 
 class WishEditFragment(id: Long = -1) : Fragment() {
@@ -55,6 +57,9 @@ class WishEditFragment(id: Long = -1) : Fragment() {
             val wishItemPrice = binding.price.text.toString().toDouble()
             val wishItemDescription = binding.description.text.toString()
             val wishItemImageUri = imageUri
+            //val location
+
+            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -64,7 +69,7 @@ class WishEditFragment(id: Long = -1) : Fragment() {
         else MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
         val ct = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, "photo.jpg")
+            put(MediaStore.Images.Media.DISPLAY_NAME, "wish_item.jpg")
             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
         }
 
