@@ -24,7 +24,10 @@ class WishEditFragment(id: Long = -1) : Fragment() {
                 requireContext().contentResolver
                     .delete(it, null, null)
             }
-        } else binding.image.setImageURI(imageUri)
+        } else {
+            binding.image.setImageURI(imageUri)
+            println(imageUri)
+        }
     }
 
     override fun onCreateView(
