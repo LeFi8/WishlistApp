@@ -1,12 +1,13 @@
-package com.example.wishlistapp
+package com.example.wishlistapp.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.example.wishlistapp.adapters.WishItemAdapter
 import com.example.wishlistapp.databinding.FragmentWishlistBinding
 
 class WishlistFragment : Fragment() {
@@ -26,7 +27,8 @@ class WishlistFragment : Fragment() {
 
         val adapter = WishItemAdapter()
         binding.recyclerView.let {
-            binding.recyclerView.adapter = adapter
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(requireContext())
         }
 
 
