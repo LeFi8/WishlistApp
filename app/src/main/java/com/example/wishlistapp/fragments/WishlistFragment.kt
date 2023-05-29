@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wishlistapp.adapters.WishItemAdapter
 import com.example.wishlistapp.databinding.FragmentWishlistBinding
+import com.example.wishlistapp.navigation.Navigable
 
 class WishlistFragment : Fragment() {
 
@@ -29,6 +30,10 @@ class WishlistFragment : Fragment() {
         binding.recyclerView.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        binding.addButton.setOnClickListener {
+            (activity as? Navigable)?.navigate(Navigable.Destination.Add)
         }
 
 
