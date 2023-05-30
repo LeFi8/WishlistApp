@@ -5,13 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wishlistapp.adapters.WishItemAdapter
 import com.example.wishlistapp.data.WishDB
 import com.example.wishlistapp.data.model.Wish
 import com.example.wishlistapp.databinding.FragmentWishlistBinding
-import com.example.wishlistapp.navigation.Navigable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,12 +37,6 @@ class WishlistFragment : Fragment() {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(requireContext())
         }
-
-        /*binding.addButton.setOnClickListener {
-            (activity as? Navigable)?.navigate(Navigable.Destination.Add)
-        }*/
-
-
     }
 
     private fun loadData() = CoroutineScope(Dispatchers.Main).launch {

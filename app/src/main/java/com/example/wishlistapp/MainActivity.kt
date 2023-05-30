@@ -1,6 +1,5 @@
 package com.example.wishlistapp
 
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -81,6 +80,4 @@ class MainActivity : AppCompatActivity(), Navigable, FragmentManager.OnBackStack
         if (supportFragmentManager.findFragmentById(binding.fragmentContainerView.id) is MapFragment)
             binding.bottomNav.menu.getItem(1).isChecked = true
     }
-
-
 }
