@@ -40,9 +40,9 @@ class WishlistFragment : Fragment() {
             it.layoutManager = LinearLayoutManager(requireContext())
         }
 
-        binding.addButton.setOnClickListener {
+        /*binding.addButton.setOnClickListener {
             (activity as? Navigable)?.navigate(Navigable.Destination.Add)
-        }
+        }*/
 
 
     }
