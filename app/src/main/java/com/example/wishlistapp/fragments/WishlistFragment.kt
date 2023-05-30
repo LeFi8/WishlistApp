@@ -8,12 +8,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.wishlistapp.adapters.WishItemAdapter
+import com.example.wishlistapp.data.WishDB
+import com.example.wishlistapp.data.model.Wish
 import com.example.wishlistapp.databinding.FragmentWishlistBinding
 import com.example.wishlistapp.navigation.Navigable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class WishlistFragment : Fragment() {
 
     private lateinit var binding: FragmentWishlistBinding
+    private var adapter : WishItemAdapter ?= null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +33,8 @@ class WishlistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = WishItemAdapter()
+        adapter = WishItemAdapter()
+        loadData()
         binding.recyclerView.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(requireContext())
@@ -37,6 +45,21 @@ class WishlistFragment : Fragment() {
         }
 
 
+    }
+
+    private fun loadData() = CoroutineScope(Dispatchers.Main).launch {
+        val wishes = withContext(Dispatchers.IO) {
+            WishDB.open(requireContext()).wishes.getAll().map {
+                Wish(
+                    it.id,
+                    it.name,
+                    it.price,
+                    it.imageUri,
+                    it.localization
+                )
+            }
+        }
+        adapter?.replace(wishes)
     }
 
 }

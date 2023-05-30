@@ -13,7 +13,12 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.wishlistapp.R
+import com.example.wishlistapp.data.WishDB
+import com.example.wishlistapp.data.entities.WishEntity
 import com.example.wishlistapp.databinding.FragmentWishEditBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class WishEditFragment(id: Long = -1) : Fragment() {
 
@@ -53,12 +58,27 @@ class WishEditFragment(id: Long = -1) : Fragment() {
         }
 
         binding.saveButton.setOnClickListener {
+            if (!validateInput()) return@setOnClickListener
+
             val wishItemName = binding.name.text.toString()
             val wishItemPrice = binding.price.text.toString().toDouble()
             val wishItemDescription = binding.description.text.toString()
-            val wishItemImageUri = imageUri
-            //val location
+            val wishItemImageUri = imageUri.toString()
+            val location = "TODO: geofence"
 
+            val newWish = WishEntity(
+                name = wishItemName,
+                price = wishItemPrice,
+                description = wishItemDescription,
+                imageUri = imageUri.toString(),
+                localization = location
+            )
+
+            CoroutineScope(Dispatchers.IO).launch {
+                WishDB.open(requireContext()).wishes.addWish(newWish)
+            }
+
+            parentFragmentManager.popBackStack()
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
         }
     }
@@ -75,6 +95,19 @@ class WishEditFragment(id: Long = -1) : Fragment() {
 
         imageUri = requireContext().contentResolver.insert(uri, ct)
         cameraLauncher.launch(imageUri)
+    }
+
+    private fun validateInput(): Boolean {
+        var flag = true
+        if (binding.name.text.isEmpty()) {
+            binding.name.error = "This field cannot be empty"
+            flag = false
+        }
+        if (binding.price.text.isEmpty()) {
+            binding.price.error = "This field cannot be empty"
+            flag = false
+        }
+        return flag
     }
 
 }

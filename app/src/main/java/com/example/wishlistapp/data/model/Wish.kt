@@ -6,6 +6,6 @@ data class Wish(
     val id: Long,
     val name: String,
     val price: Double,
-    val imageUri: Uri,
+    val imageUri: String,
     val localization: String
 )

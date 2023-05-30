@@ -13,14 +13,14 @@ interface WishDao {
     fun getAll(): List<WishEntity>
 
     @Query("SELECT * from wish WHERE id = :id;")
-    fun getBook(id: Long): WishEntity
+    fun getWish(id: Long): WishEntity
 
     @Insert
-    fun addBook(newWish: WishEntity)
+    fun addWish(newWish: WishEntity)
 
     @Update
-    fun updateBook(wish: WishEntity)
+    fun updateWish(wish: WishEntity)
 
     @Delete
-    fun removeBook(wishId: WishEntity)
+    fun removeWish(wishId: WishEntity)
 }

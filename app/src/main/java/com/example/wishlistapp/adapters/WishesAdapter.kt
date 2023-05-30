@@ -1,6 +1,7 @@
 package com.example.wishlistapp.adapters
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
@@ -15,8 +16,10 @@ import com.example.wishlistapp.databinding.ListItemBinding
 class WishItemViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(wish: Wish) {
-        binding.imageView.setImageResource(R.drawable.ic_launcher_foreground)
-        binding.textView.text = wish.name
+        binding.photo.setImageURI(Uri.parse(wish.imageUri))
+        binding.name.text = wish.name
+        binding.price.text = wish.price.toString()
+        binding.location.text = wish.localization
     }
 
     fun getBinding() = binding
@@ -34,17 +37,18 @@ class WishItemAdapter : RecyclerView.Adapter<WishItemViewHolder>() {
         return WishItemViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = 1
+    override fun getItemCount(): Int = data.size
 
     override fun onBindViewHolder(holder: WishItemViewHolder, position: Int) {
-        data.add(Wish(1, "TEST", 10.0, "PJATK"))
         holder.bind(data[position])
         val binding = holder.getBinding()
-        refresh()
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun refresh() {
+    fun replace(newData: List<Wish>) {
+        data.clear()
+        data.addAll(newData.reversed()) //order from last added
+
         handler.post {
             notifyDataSetChanged()
         }
