@@ -19,8 +19,9 @@ import com.example.wishlistapp.databinding.FragmentWishEditBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class WishEditFragment(id: Long = -1) : Fragment() {
+class WishEditFragment(private val editId: Long = -1L) : Fragment() {
 
     private lateinit var binding: FragmentWishEditBinding
     private lateinit var cameraLauncher: ActivityResultLauncher<Uri>
@@ -34,6 +35,22 @@ class WishEditFragment(id: Long = -1) : Fragment() {
         } else {
             binding.image.setImageURI(imageUri)
             println(imageUri)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (editId == -1L) return
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val data = withContext(Dispatchers.IO) {
+                WishDB.open(requireContext()).wishes.getWish(editId)
+            }
+            binding.fragmentTitle.setText(R.string.edit)
+            binding.name.setText(data.name)
+            binding.price.setText(data.price.toString())
+            binding.image.setImageURI(Uri.parse(data.imageUri))
+            binding.description.setText(data.description)
         }
     }
 
@@ -60,23 +77,8 @@ class WishEditFragment(id: Long = -1) : Fragment() {
         binding.saveButton.setOnClickListener {
             if (!validateInput()) return@setOnClickListener
 
-            val wishItemName = binding.name.text.toString()
-            val wishItemPrice = binding.price.text.toString().toDouble()
-            val wishItemDescription = binding.description.text.toString()
-            val wishItemImageUri = imageUri.toString()
-            val location = "TODO: geofence"
-
-            val newWish = WishEntity(
-                name = wishItemName,
-                price = wishItemPrice,
-                description = wishItemDescription,
-                imageUri = imageUri.toString(),
-                localization = location
-            )
-
-            CoroutineScope(Dispatchers.IO).launch {
-                WishDB.open(requireContext()).wishes.addWish(newWish)
-            }
+            if (editId == -1L) addToDb()
+            else updateDb()
 
             parentFragmentManager.popBackStack()
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
@@ -108,6 +110,47 @@ class WishEditFragment(id: Long = -1) : Fragment() {
             flag = false
         }
         return flag
+    }
+
+    private fun addToDb() {
+        val wishItemName = binding.name.text.toString()
+        val wishItemPrice = binding.price.text.toString().toDouble()
+        val wishItemDescription = binding.description.text.toString()
+        val wishItemImageUri = imageUri.toString()
+        val location = "TODO: geofence"
+
+        val newWish = WishEntity(
+            name = wishItemName,
+            price = wishItemPrice,
+            description = wishItemDescription,
+            imageUri = wishItemImageUri,
+            localization = location
+        )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            WishDB.open(requireContext()).wishes.addWish(newWish)
+        }
+    }
+
+    private fun updateDb() {
+        val wishItemName = binding.name.text.toString()
+        val wishItemPrice = binding.price.text.toString().toDouble()
+        val wishItemDescription = binding.description.text.toString()
+        val wishItemImageUri = imageUri.toString()
+        val location = "TODO: geofence"
+
+        val wish = WishEntity(
+            id = editId,
+            name = wishItemName,
+            price = wishItemPrice,
+            description = wishItemDescription,
+            imageUri = wishItemImageUri,
+            localization = location
+        )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            WishDB.open(requireContext()).wishes.updateWish(wish)
+        }
     }
 
 }

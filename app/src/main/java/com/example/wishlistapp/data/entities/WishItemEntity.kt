@@ -1,6 +1,5 @@
 package com.example.wishlistapp.data.entities
 
-import android.net.Uri
 import androidx.room.*
 
 @Entity(tableName = "wish")
