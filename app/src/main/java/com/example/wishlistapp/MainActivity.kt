@@ -45,6 +45,13 @@ class MainActivity : AppCompatActivity(), Navigable, FragmentManager.OnBackStack
     }
 
     override fun navigate(to: Navigable.Destination, id: Long) {
+        val currentFragment = supportFragmentManager.findFragmentById(binding.fragmentContainerView.id)
+
+        if (currentFragment is WishlistFragment && to == Navigable.Destination.List)
+            return
+        if (currentFragment is MapFragment && to == Navigable.Destination.Map)
+            return
+
         supportFragmentManager.beginTransaction().apply {
             when (to) {
                 Navigable.Destination.List -> replace(

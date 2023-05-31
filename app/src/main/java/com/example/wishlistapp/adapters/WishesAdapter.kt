@@ -55,44 +55,6 @@ class WishItemAdapter : RecyclerView.Adapter<WishItemViewHolder>() {
                 data[position].id
             )
         }
-
-        binding.root.setOnLongClickListener {
-            val context = binding.root.context
-            val alertDialog: AlertDialog.Builder = AlertDialog.Builder(context)
-            alertDialog.setTitle(
-                binding.root.resources.getString(
-                    R.string.removing_are_you_sure,
-                    binding.name.text.toString()
-                )
-            )
-            alertDialog.setPositiveButton(binding.root.resources.getString(R.string.yes)) { _, _ ->
-                CoroutineScope(Dispatchers.IO).launch {
-                    val selectedWish =
-                        WishDB.open(context).wishes.getWish(data[position].id)
-                    WishDB.open(context).wishes.removeWish(selectedWish)
-
-                    val wishes = WishDB.open(context).wishes.getAll().map {
-                        Wish(
-                            it.id,
-                            it.name,
-                            it.price,
-                            it.imageUri,
-                            it.localization
-                        )
-                    }
-                    replace(wishes)
-                }
-                Toast.makeText(
-                    context,
-                    binding.root.resources.getString(R.string.removed),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            alertDialog.setNegativeButton(binding.root.resources.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
-            alertDialog.show()
-
-            true
-        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

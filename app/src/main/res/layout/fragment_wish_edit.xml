@@ -141,6 +141,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description" />
 
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="32dp"
+                android:background="@drawable/baseline_delete_24"
+                android:backgroundTint="@color/red"
+                android:clickable="false"
+                android:drawableTint="@color/red"
+                android:textColor="@color/red"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_title"
+                app:layout_constraintStart_toEndOf="@+id/fragment_title"
+                app:layout_constraintTop_toTopOf="@+id/fragment_title" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

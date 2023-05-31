@@ -1,5 +1,6 @@
 package com.example.wishlistapp.fragments
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.net.Uri
 import android.os.Build
@@ -47,6 +48,8 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             val data = withContext(Dispatchers.IO) {
                 WishDB.open(requireContext()).wishes.getWish(editId)
             }
+            binding.deleteButton.visibility = View.VISIBLE
+            binding.deleteButton.isClickable = true
             binding.fragmentTitle.setText(R.string.edit)
             binding.name.setText(data.name)
             binding.price.setText(data.price.toString())
@@ -84,6 +87,33 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             parentFragmentManager.popBackStack()
             (activity as? Navigable)?.navigate(Navigable.Destination.List)
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+        }
+
+        binding.deleteButton.setOnClickListener {
+            val context = binding.root.context
+            val alertDialog: AlertDialog.Builder = AlertDialog.Builder(context)
+            alertDialog.setTitle(
+                binding.root.resources.getString(
+                    R.string.removing_are_you_sure,
+                    binding.name.text.toString()
+                )
+            )
+            alertDialog.setPositiveButton(binding.root.resources.getString(R.string.yes)) { _, _ ->
+                CoroutineScope(Dispatchers.IO).launch {
+                    val selectedWish =
+                        WishDB.open(context).wishes.getWish(editId)
+                    WishDB.open(context).wishes.removeWish(selectedWish)
+                }
+                parentFragmentManager.popBackStack()
+                (activity as? Navigable)?.navigate(Navigable.Destination.List)
+                Toast.makeText(
+                    context,
+                    binding.root.resources.getString(R.string.removed),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            alertDialog.setNegativeButton(binding.root.resources.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
+            alertDialog.show()
         }
     }
 
