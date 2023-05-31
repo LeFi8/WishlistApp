@@ -66,6 +66,4 @@ class WishItemAdapter : RecyclerView.Adapter<WishItemViewHolder>() {
             notifyDataSetChanged()
         }
     }
-
-
 }
