@@ -1,7 +1,6 @@
 package com.example.wishlistapp.fragments
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Bundle
@@ -9,10 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.example.wishlistapp.MapService.URIRequester
+import com.example.wishlistapp.R
 import com.example.wishlistapp.databinding.FragmentMapBinding
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -21,6 +20,8 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 
@@ -61,6 +62,8 @@ class MapFragment : Fragment(), MapEventsReceiver {
         binding.locationButton.setOnClickListener {
             locationOn()
         }
+
+        binding.map.overlays.add(MapEventsOverlay(this))
     }
 
     private fun checkPermissions(): Boolean {
@@ -91,22 +94,32 @@ class MapFragment : Fragment(), MapEventsReceiver {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
-        p?.let {
-            Toast.makeText(requireContext(), "CLICK", Toast.LENGTH_SHORT).show()
-            println("CLICK")
-            return true
+        GlobalScope.launch {
+            val response = p?.let {
+                URIRequester.requestURI(it.latitude, it.longitude)
+                setPinPoint(p)
+            }
+
+            println(response)
+
         }
-        return false
+        return true
     }
 
     override fun longPressHelper(p: GeoPoint?): Boolean {
-        p?.let {
-            Toast.makeText(requireContext(), "PRESS", Toast.LENGTH_SHORT).show()
-            println("PRESS")
-            return true
-        }
         return false
+    }
+
+    private fun setPinPoint(p: GeoPoint) {
+        binding.map.apply {
+            val marker = Marker(binding.map)
+            marker.position = p
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            marker.icon = ContextCompat.getDrawable(requireContext(), R.drawable.location_pin)
+            binding.map.overlays.add(marker)
+        }
     }
 
 }
