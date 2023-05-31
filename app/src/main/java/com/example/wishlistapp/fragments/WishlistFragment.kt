@@ -39,6 +39,11 @@ class WishlistFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        loadData()
+    }
+
     private fun loadData() = CoroutineScope(Dispatchers.Main).launch {
         val wishes = withContext(Dispatchers.IO) {
             WishDB.open(requireContext()).wishes.getAll().map {
@@ -53,5 +58,4 @@ class WishlistFragment : Fragment() {
         }
         adapter?.replace(wishes)
     }
-
 }

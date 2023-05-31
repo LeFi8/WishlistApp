@@ -16,6 +16,7 @@ import com.example.wishlistapp.R
 import com.example.wishlistapp.data.WishDB
 import com.example.wishlistapp.data.entities.WishEntity
 import com.example.wishlistapp.databinding.FragmentWishEditBinding
+import com.example.wishlistapp.navigation.Navigable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -81,6 +82,7 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             else updateDb()
 
             parentFragmentManager.popBackStack()
+            (activity as? Navigable)?.navigate(Navigable.Destination.List)
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
         }
     }
