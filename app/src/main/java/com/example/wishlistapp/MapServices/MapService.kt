@@ -71,9 +71,6 @@ class MapService(
             activity.getSystemService(LocationManager::class.java)
                 .getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?.let {
-                    println(it.latitude)
-                    println(it.longitude)
-
                     return URIRequester.requestLocation(it.latitude, it.longitude)
                 }
         } else {
