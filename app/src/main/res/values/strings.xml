@@ -7,6 +7,7 @@
     <string name="price">Price</string>
     <string name="description">Description</string>
     <string name="location">Location</string>
+    <string name="current_location">Current location</string>
     <string name="new_wish">New wish</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>

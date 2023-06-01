@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.wishlistapp.MapServices.MapService
 import com.example.wishlistapp.R
 import com.example.wishlistapp.data.WishDB
 import com.example.wishlistapp.data.entities.WishEntity
@@ -39,9 +40,11 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             println(imageUri)
         }
     }
+    private lateinit var mapService: MapService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if (editId == -1L) return
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -68,6 +71,14 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
         )
         return FragmentWishEditBinding.inflate(inflater, container, false).also {
             binding = it
+            val requestPermissionLauncher = registerForActivityResult(
+                ActivityResultContracts.RequestMultiplePermissions()
+            ) { permissions ->
+                if (permissions[android.Manifest.permission.ACCESS_FINE_LOCATION] == true) {
+                    mapService.locationOn()
+                }
+            }
+            mapService = MapService(it.map, requireActivity(), requestPermissionLauncher)
         }.root
     }
 
@@ -114,6 +125,12 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             }
             alertDialog.setNegativeButton(binding.root.resources.getString(R.string.no)) { dialog, _ -> dialog.dismiss() }
             alertDialog.show()
+        }
+
+        binding.locationButton.setOnClickListener {
+            if (mapService.checkPermissions())
+                mapService.locationOn()
+            else mapService.requestPermissions()
         }
     }
 

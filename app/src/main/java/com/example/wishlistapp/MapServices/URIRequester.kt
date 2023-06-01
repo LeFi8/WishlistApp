@@ -1,4 +1,4 @@
-package com.example.wishlistapp.MapService
+package com.example.wishlistapp.MapServices
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
