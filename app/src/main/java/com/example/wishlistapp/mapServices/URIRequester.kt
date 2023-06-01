@@ -1,4 +1,4 @@
-package com.example.wishlistapp.MapServices
+package com.example.wishlistapp.mapServices
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,7 +11,7 @@ import java.net.URL
 
 class URIRequester {
     companion object {
-        suspend fun requestLocation(latitude: Double, longitude: Double): String {
+        suspend fun requestLocationName(latitude: Double, longitude: Double): String {
             val urlString =
                 "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$latitude&lon=$longitude&zoom=18&addressdetails=1"
             var response = ""

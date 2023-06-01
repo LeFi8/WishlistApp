@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity(), Navigable, FragmentManager.OnBackStack
         setContentView(binding.root)
 //        supportActionBar?.hide()
 
+        Notification.createChannel(this)
+
         supportFragmentManager.addOnBackStackChangedListener(this)
         supportFragmentManager.beginTransaction()
             .add(R.id.fragmentContainerView, WishlistFragment(), WishlistFragment::class.java.name)

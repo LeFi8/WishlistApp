@@ -1,4 +1,4 @@
-package com.example.wishlistapp.MapServices
+package com.example.wishlistapp.mapServices
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -21,7 +21,8 @@ class MapService(
 
     private val permissions = listOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION)
+        Manifest.permission.ACCESS_FINE_LOCATION
+    )
 
     init {
         Configuration.getInstance().userAgentValue = activity.packageName
@@ -71,11 +72,25 @@ class MapService(
             activity.getSystemService(LocationManager::class.java)
                 .getLastKnownLocation(LocationManager.GPS_PROVIDER)
                 ?.let {
-                    return URIRequester.requestLocation(it.latitude, it.longitude)
+                    return URIRequester.requestLocationName(it.latitude, it.longitude)
                 }
         } else {
             requestPermissions()
         }
         return ""
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLatitudeLongitude() : Pair<Double, Double> {
+        if (checkPermissions()) {
+            activity.getSystemService(LocationManager::class.java)
+                .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                ?.let {
+                    return Pair(it.latitude, it.longitude)
+                }
+        } else {
+            requestPermissions()
+        }
+        return Pair(0.0, 0.0)
     }
 }

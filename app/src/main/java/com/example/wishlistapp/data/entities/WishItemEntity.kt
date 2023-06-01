@@ -10,5 +10,7 @@ data class WishEntity(
     val price: Double,
     val description: String,
     val imageUri: String,
-    val location: String
+    val location: String,
+    val latitude: Double,
+    val longitude: Double
 )

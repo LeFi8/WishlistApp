@@ -16,6 +16,7 @@
     <string name="list">List</string>
     <string name="map">Map</string>
     <string name="add">Add</string>
+    <string name="notification">Your wish is waiting for you!</string>
     <string name="removing_are_you_sure">Are you sure you want to remove %s?</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
