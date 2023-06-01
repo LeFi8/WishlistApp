@@ -1,11 +1,13 @@
 package com.example.wishlistapp.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings.Global
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +23,7 @@ import com.example.wishlistapp.databinding.FragmentWishEditBinding
 import com.example.wishlistapp.navigation.Navigable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -58,9 +61,13 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             binding.price.setText(data.price.toString())
             binding.image.setImageURI(Uri.parse(data.imageUri))
             binding.description.setText(data.description)
+            binding.location.setText(data.location)
+
+            imageUri = Uri.parse(data.imageUri)
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -79,6 +86,10 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
                 }
             }
             mapService = MapService(it.map, requireActivity(), requestPermissionLauncher)
+            it.map.setOnTouchListener { _, _ ->
+                //disables user interaction with a map
+                true
+            }
         }.root
     }
 
@@ -128,10 +139,19 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
         }
 
         binding.locationButton.setOnClickListener {
-            if (mapService.checkPermissions())
+            if (mapService.checkPermissions()) {
                 mapService.locationOn()
-            else mapService.requestPermissions()
+                CoroutineScope(Dispatchers.Main).launch {
+                    val currentLocation = withContext(Dispatchers.IO) {
+                        mapService.getCurrentLocation()
+                    }
+                    binding.location.setText(currentLocation)
+                }
+            } else {
+                mapService.requestPermissions()
+            }
         }
+
     }
 
     private fun createPicture() {
@@ -166,14 +186,14 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
         val wishItemPrice = binding.price.text.toString().toDouble()
         val wishItemDescription = binding.description.text.toString()
         val wishItemImageUri = imageUri.toString()
-        val location = "TODO: geofence"
+        val location = binding.location.text.toString()
 
         val newWish = WishEntity(
             name = wishItemName,
             price = wishItemPrice,
             description = wishItemDescription,
             imageUri = wishItemImageUri,
-            localization = location
+            location = location
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -186,7 +206,7 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
         val wishItemPrice = binding.price.text.toString().toDouble()
         val wishItemDescription = binding.description.text.toString()
         val wishItemImageUri = imageUri.toString()
-        val location = "TODO: geofence"
+        val location = binding.location.text.toString()
 
         val wish = WishEntity(
             id = editId,
@@ -194,7 +214,7 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             price = wishItemPrice,
             description = wishItemDescription,
             imageUri = wishItemImageUri,
-            localization = location
+            location = location
         )
 
         CoroutineScope(Dispatchers.IO).launch {

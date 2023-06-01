@@ -52,7 +52,7 @@ class WishlistFragment : Fragment() {
                     it.name,
                     it.price,
                     it.imageUri,
-                    it.localization
+                    it.location
                 )
             }
         }

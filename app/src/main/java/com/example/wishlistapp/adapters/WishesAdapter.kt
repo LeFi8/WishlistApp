@@ -25,7 +25,7 @@ class WishItemViewHolder(private val binding: ListItemBinding) : RecyclerView.Vi
         binding.photo.setImageURI(Uri.parse(wish.imageUri))
         binding.name.text = wish.name
         binding.price.text = wish.price.toString()
-        binding.location.text = wish.localization
+        binding.location.text = wish.location
     }
 
     fun getBinding() = binding
