@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -78,6 +80,30 @@ class MapService(
             requestPermissions()
         }
         return ""
+    }
+
+    suspend fun getCurrentLatitude(q: String): Double? {
+        return URIRequester.requestReverseSearch(q).first
+    }
+
+    suspend fun getCurrentLongitude(q: String): Double? {
+        return URIRequester.requestReverseSearch(q).second
+    }
+
+    @SuppressLint("MissingPermission")
+    suspend fun animateToLocation(locationQuery: String) {
+        mapView.apply {
+            val loc = URIRequester.requestReverseSearch(locationQuery)
+            withContext(Dispatchers.Main) {
+                controller.animateTo(
+                    loc.first?.let { latitude ->
+                        loc.second?.let { longitude ->
+                            GeoPoint(latitude, longitude)
+                        }
+                    }, 18.0, 1000
+                )
+            }
+        }
     }
 
     @SuppressLint("MissingPermission")

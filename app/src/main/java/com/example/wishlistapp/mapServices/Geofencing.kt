@@ -19,7 +19,7 @@ object Geofencing {
 
     fun createGeofence(context: Context, latitude: Double, longitude: Double, id: String) {
         val geofence = Geofence.Builder()
-            .setCircularRegion(latitude, longitude, 200.0F)
+            .setCircularRegion(latitude, longitude, 200f)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setRequestId(id)

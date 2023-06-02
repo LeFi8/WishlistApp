@@ -20,6 +20,7 @@ import com.example.wishlistapp.data.entities.WishEntity
 import com.example.wishlistapp.databinding.FragmentWishEditBinding
 import com.example.wishlistapp.mapServices.Geofencing
 import com.example.wishlistapp.mapServices.MapService
+import com.example.wishlistapp.mapServices.URIRequester
 import com.example.wishlistapp.navigation.Navigable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,8 +44,6 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
         }
     }
     private lateinit var mapService: MapService
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,8 +63,6 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             binding.description.setText(data.description)
             binding.location.setText(data.location)
 
-            latitude = data.latitude
-            longitude = data.longitude
             imageUri = Uri.parse(data.imageUri)
         }
     }
@@ -109,7 +106,19 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             if (editId == -1L) addToDb()
             else updateDb()
 
-            Geofencing.createGeofence(requireContext(), latitude, longitude, binding.name.text.toString())
+            val context = requireContext()
+            CoroutineScope(Dispatchers.IO).launch {
+                val latitude = mapService.getCurrentLatitude(binding.location.text.toString())
+                val longitude = mapService.getCurrentLongitude(binding.location.text.toString())
+                if (latitude != null && longitude != null) {
+                    Geofencing.createGeofence(
+                        context,
+                        latitude,
+                        longitude,
+                        binding.name.text.toString()
+                    )
+                }
+            }
 
             parentFragmentManager.popBackStack()
             (activity as? Navigable)?.navigate(Navigable.Destination.List)
@@ -143,6 +152,19 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             alertDialog.show()
         }
 
+        binding.searchButton.setOnClickListener {
+            if (mapService.checkPermissions()) {
+                mapService.locationOn()
+                CoroutineScope(Dispatchers.Main).launch {
+                    withContext(Dispatchers.IO) {
+                        mapService.animateToLocation(binding.location.text.toString())
+                    }
+                }
+            } else {
+                mapService.requestPermissions()
+            }
+        }
+
         binding.locationButton.setOnClickListener {
             if (mapService.checkPermissions()) {
                 mapService.locationOn()
@@ -152,12 +174,11 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
                     }
                     binding.location.setText(currentLocation)
                 }
-                latitude = mapService.getLatitudeLongitude().first
-                longitude = mapService.getLatitudeLongitude().second
             } else {
                 mapService.requestPermissions()
             }
         }
+
 
     }
 
@@ -201,8 +222,6 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             description = wishItemDescription,
             imageUri = wishItemImageUri,
             location = location,
-            latitude = latitude,
-            longitude = longitude
         )
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -224,8 +243,6 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
             description = wishItemDescription,
             imageUri = wishItemImageUri,
             location = location,
-            latitude = latitude,
-            longitude = longitude
         )
 
         CoroutineScope(Dispatchers.IO).launch {

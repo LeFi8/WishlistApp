@@ -2,6 +2,7 @@ package com.example.wishlistapp.mapServices
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -61,6 +62,39 @@ class URIRequester {
             }
 
             return response
+        }
+
+        suspend fun requestReverseSearch(q: String): Pair<Double?, Double?> {
+            val urlString = "https://nominatim.openstreetmap.org/search?q=$q&format=jsonv2"
+
+            var latitude: Double? = null
+            var longitude: Double? = null
+
+            withContext(Dispatchers.IO) {
+                try {
+                    val url = URL(urlString)
+                    val connection = url.openConnection() as HttpURLConnection
+                    connection.requestMethod = "GET"
+
+                    val responseCode = connection.responseCode
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        val inputStream = connection.inputStream
+                        val reader = BufferedReader(InputStreamReader(inputStream))
+                        val responseString = reader.use(BufferedReader::readText)
+
+                        val jsonArray = JSONArray(responseString)
+                        if (jsonArray.length() > 0) {
+                            val jsonObject = jsonArray.getJSONObject(0)
+                            latitude = jsonObject.optString("lat").toDoubleOrNull()
+                            longitude = jsonObject.optString("lon").toDoubleOrNull()
+                        }
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+
+            return Pair(latitude, longitude)
         }
     }
 }

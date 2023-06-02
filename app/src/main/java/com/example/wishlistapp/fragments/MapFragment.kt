@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import com.example.wishlistapp.Notification
 import com.example.wishlistapp.databinding.FragmentMapBinding
 import com.example.wishlistapp.mapServices.MapService
 
@@ -37,8 +36,6 @@ class MapFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.locationButton.setOnClickListener {
-            println("CLICK")
-            Notification.createNotification(requireContext())
             if (mapService.checkPermissions())
                 mapService.locationOn()
             else mapService.requestPermissions()
