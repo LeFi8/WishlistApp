@@ -1,23 +1,16 @@
 package com.example.wishlistapp.adapters
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.HandlerCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.wishlistapp.R
-import com.example.wishlistapp.data.WishDB
 import com.example.wishlistapp.data.model.Wish
 import com.example.wishlistapp.databinding.ListItemBinding
 import com.example.wishlistapp.navigation.Navigable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class WishItemViewHolder(private val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.wishlistapp.Notification
 import com.example.wishlistapp.R
 import com.example.wishlistapp.data.WishDB
 import com.example.wishlistapp.data.entities.WishEntity
@@ -94,6 +95,8 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        Notification.createChannel(requireContext())
 
         binding.addImage.setOnClickListener {
             createPicture()

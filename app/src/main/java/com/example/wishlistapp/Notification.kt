@@ -15,7 +15,7 @@ object Notification {
 
     fun createNotification(context: Context) = NotificationCompat.Builder(context, CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentTitle("Wishlist Notification")
+        .setContentTitle(context.getString(R.string.notification_title))
         .setContentText(context.getString(R.string.notification))
         .build()
 }
