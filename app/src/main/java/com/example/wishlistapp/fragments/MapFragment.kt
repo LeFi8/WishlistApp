@@ -56,7 +56,7 @@ class MapFragment : Fragment() {
                     latitude?.let { lat ->
                         longitude?.let { lon ->
                             val geoPoint = GeoPoint(lat, lon)
-                            mapService.setPoints(geoPoint, wish.name)
+                            mapService.setPoints(geoPoint, wish.name + "\n" + wish.location)
                         }
                     }
                 }
