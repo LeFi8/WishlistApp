@@ -7,12 +7,14 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
+import com.example.wishlistapp.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 class MapService(
@@ -82,11 +84,11 @@ class MapService(
         return ""
     }
 
-    suspend fun getCurrentLatitude(q: String): Double? {
+    suspend fun getLatitude(q: String): Double? {
         return URIRequester.requestReverseSearch(q).first
     }
 
-    suspend fun getCurrentLongitude(q: String): Double? {
+    suspend fun getLongitude(q: String): Double? {
         return URIRequester.requestReverseSearch(q).second
     }
 
@@ -106,17 +108,14 @@ class MapService(
         }
     }
 
-    @SuppressLint("MissingPermission")
-    fun getLatitudeLongitude() : Pair<Double, Double> {
-        if (checkPermissions()) {
-            activity.getSystemService(LocationManager::class.java)
-                .getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                ?.let {
-                    return Pair(it.latitude, it.longitude)
-                }
-        } else {
-            requestPermissions()
+    fun setPoints(p: GeoPoint, text: String) {
+        mapView.apply {
+            val marker = Marker(mapView)
+            marker.position = p
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            marker.icon = ContextCompat.getDrawable(context, R.drawable.location_pin)
+            marker.title = text
+            mapView.overlays.add(marker)
         }
-        return Pair(0.0, 0.0)
     }
 }

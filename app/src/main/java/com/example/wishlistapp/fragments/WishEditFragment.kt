@@ -20,7 +20,6 @@ import com.example.wishlistapp.data.entities.WishEntity
 import com.example.wishlistapp.databinding.FragmentWishEditBinding
 import com.example.wishlistapp.mapServices.Geofencing
 import com.example.wishlistapp.mapServices.MapService
-import com.example.wishlistapp.mapServices.URIRequester
 import com.example.wishlistapp.navigation.Navigable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -108,8 +107,8 @@ class WishEditFragment(private val editId: Long = -1L) : Fragment() {
 
             val context = requireContext()
             CoroutineScope(Dispatchers.IO).launch {
-                val latitude = mapService.getCurrentLatitude(binding.location.text.toString())
-                val longitude = mapService.getCurrentLongitude(binding.location.text.toString())
+                val latitude = mapService.getLatitude(binding.location.text.toString())
+                val longitude = mapService.getLongitude(binding.location.text.toString())
                 if (latitude != null && longitude != null) {
                     Geofencing.createGeofence(
                         context,
